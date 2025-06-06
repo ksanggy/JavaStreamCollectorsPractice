@@ -34,6 +34,7 @@ public class Main {
     }
 
     // want to return list of students' subject grade medians as k : v pair, where k = subject & v = median value
+    @SuppressWarnings("all")
     public static Collector<Student, ?, Map<String, Double>> getSubjectMedians() {
         return Collectors.groupingBy(
                 Student::getSubject,
