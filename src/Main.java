@@ -39,12 +39,13 @@ public class Main {
         return Collectors.groupingBy(
                 Student::getSubject,
                 Collectors.collectingAndThen(
-                    Collectors.mapping(Student::getGrade, Collectors.toList()),
+                    Collectors.toList(), // change from mapping(Student::getGrade, toList) to make pipeline data more apparent
                     subjectStudents -> {
                         // After Java 16+, toList() already returns as unmodifiable list (immutable collections are thread safe)
                         // wrapping with unmodifiableList is redundant in this case but is explicit and is backward compatible if Java < 16
                         List<Double> grades = Collections.unmodifiableList(
                             subjectStudents.stream()
+                                .map(Student::getGrade)// added with the change above since data is of list of Student not grades.
                                 .sorted()
                                 .toList()
                         );
