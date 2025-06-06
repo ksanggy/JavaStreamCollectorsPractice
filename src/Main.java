@@ -34,6 +34,7 @@ public class Main {
     }
 
     // want to return list of students' subject grade medians as k : v pair, where k = subject & v = median value
+    // due to stream pipeline using type specific methods like Student::getSubject, the return type of method cannot be more general (as in using Generics)
     @SuppressWarnings("all")
     public static Collector<Student, ?, Map<String, Double>> getSubjectMedians() {
         return Collectors.groupingBy(
