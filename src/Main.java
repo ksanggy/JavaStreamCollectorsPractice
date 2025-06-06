@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
@@ -39,10 +40,13 @@ public class Main {
                 Collectors.collectingAndThen(
                     Collectors.mapping(Student::getGrade, Collectors.toList()),
                     subjectStudents -> {
-                        System.out.println("TEST 1 === " + subjectStudents);
-                        List<Double> grades = subjectStudents.stream()
+                        // After Java 16+, toList() already returns as unmodifiable list (immutable collections are thread safe)
+                        // wrapping with unmodifiableList is redundant in this case but is explicit and is backward compatible if Java < 16
+                        List<Double> grades = Collections.unmodifiableList(
+                            subjectStudents.stream()
                                 .sorted()
-                                .toList();
+                                .toList()
+                        );
                         int size = subjectStudents.size();
                         if(size % 2 == 0) {
                             return (grades.get(grades.size() / 2 - 1) + grades.get(grades.size() / 2)) / 2;
