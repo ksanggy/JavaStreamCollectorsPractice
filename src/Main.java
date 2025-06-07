@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -61,8 +62,48 @@ public class Main {
         ));
     }
 
-    public static void main( String[] args ) {
+    // A more generic version of the custom Collector method
 
+    /**
+     *    /@FunctionalInterface
+     *    public interface Function<T, R> {
+     *        R apply(T t);
+     *    }
+     *    // When the collector processes a Student object:
+     *    Student student = new Student("John", "Physics", 85.0);
+     *
+     *    // The subjectExtractor function is called like:
+     *    String subject = subjectExtractor.apply(student);  // returns "Physics"
+     *
+     *    // The gradeExtractor function is called like:
+     *    Double grade = gradeExtractor.apply(student);      // returns 85.0
+     */
+    public static <T> Collector<T, ?, Map<String, Double>> getStudentMedians(
+            Function<T, String> subjectExtractor, // inferred type of Student in this case and a return type of String => Function<Student, String> subjectFunction = (Student student) -> student.getSubject(); => Student::getSubject
+            Function<T, Double> gradeExtractor) { // inferred type of Student in this case and a return type of Double => Function<Student, Double> gradeFunction = (Student student) -> student.getGrade(); => Student::getGrade
+        return Collectors.groupingBy(
+                subjectExtractor,
+                Collectors.collectingAndThen(
+                    Collectors.toList(),
+                    subjectStudents -> {
+                        List<Double> grades = Collections.unmodifiableList(
+                            subjectStudents.stream()
+                                .map(gradeExtractor)
+                                .sorted()
+                                .toList()
+                        );
+                        int size = subjectStudents.size();
+                        if(size % 2 == 0) {
+                            return (grades.get(grades.size() / 2 - 1) + grades.get(grades.size() / 2)) / 2;
+                        }
+                        else {
+                            return grades.get(grades.size() / 2);
+                        }
+                    }
+        ));
+    }
+
+    public static void main( String[] args ) {
         List<Student> students = new ArrayList<>();
         students.add(new Student("Test " + 1, "Physics", 97.0));
         students.add(new Student("Test " + 2, "Physics", 77.0));
@@ -75,7 +116,13 @@ public class Main {
         students.add(new Student("Test " + 9, "Chemistry", 91.0));
         students.add(new Student("Test " + 10, "Chemistry", 81.0));
 
+        // Using the original method
         Map<String, Double> subjectMedians = students.stream().collect(getSubjectMedians());
         System.out.println("subjectMedians = " + subjectMedians);
+
+        // Using the generic method
+        Map<String, Double> genericSubjectMedians = students.stream()
+            .collect(getStudentMedians(Student::getSubject, Student::getGrade));
+        System.out.println("genericSubjectMedians = " + genericSubjectMedians);
     }
 }
