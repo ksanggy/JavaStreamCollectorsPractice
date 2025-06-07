@@ -71,13 +71,14 @@ public class Main {
      *    }
      *    // When the collector processes a Student object:
      *    Student student = new Student("John", "Physics", 85.0);
-     *
+     * <p>
      *    // The subjectExtractor function is called like:
      *    String subject = subjectExtractor.apply(student);  // returns "Physics"
-     *
+     * <p>
      *    // The gradeExtractor function is called like:
      *    Double grade = gradeExtractor.apply(student);      // returns 85.0
      */
+    @SuppressWarnings("all")
     public static <T> Collector<T, ?, Map<String, Double>> getStudentMedians(
             Function<T, String> subjectExtractor, // inferred type of Student in this case and a return type of String => Function<Student, String> subjectFunction = (Student student) -> student.getSubject(); => Student::getSubject
             Function<T, Double> gradeExtractor) { // inferred type of Student in this case and a return type of Double => Function<Student, Double> gradeFunction = (Student student) -> student.getGrade(); => Student::getGrade
