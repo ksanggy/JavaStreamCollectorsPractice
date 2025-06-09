@@ -114,7 +114,7 @@ public class Main {
                         return grades.get(grades.size() / 2);
                     }
                 }
-        )
+        );
     }
 
     public static void main( String[] args ) {
