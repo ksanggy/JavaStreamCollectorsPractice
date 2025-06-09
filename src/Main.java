@@ -32,6 +32,11 @@ public class Main {
         public double getGrade() {
             return grade;
         }
+
+        @Override
+        public String toString() {
+            return new String("Student [name=" + name + ", subject=" + subject + ", grade=" + grade + "]");
+        }
     }
 
     // want to return list of students' subject grade medians as k : v pair, where k = subject & v = median value
@@ -84,24 +89,32 @@ public class Main {
             Function<T, Double> gradeExtractor) { // inferred type of Student in this case and a return type of Double => Function<Student, Double> gradeFunction = (Student student) -> student.getGrade(); => Student::getGrade
         return Collectors.groupingBy(
                 subjectExtractor,
-                Collectors.collectingAndThen(
-                    Collectors.toList(),
-                    subjectStudents -> {
-                        List<Double> grades = Collections.unmodifiableList(
-                            subjectStudents.stream()
-                                .map(gradeExtractor)
-                                .sorted()
-                                .toList()
-                        );
-                        int size = subjectStudents.size();
-                        if(size % 2 == 0) {
-                            return (grades.get(grades.size() / 2 - 1) + grades.get(grades.size() / 2)) / 2;
-                        }
-                        else {
-                            return grades.get(grades.size() / 2);
-                        }
+                Collectors.mapping(
+                        gradeExtractor,
+                        medianCollector()
+                ));
+    }
+
+    /**
+     * A Collector that calculates the median of the list of grades (Double type)
+     * Input is already a list of grades of subject.
+     * Using the list of grades, we order them to calculate the median value
+     * @return A {@link Double} value median grade value
+     */
+    public static Collector<Double, ?, Double> medianCollector() {
+        return Collectors.collectingAndThen(
+                Collectors.toList(),
+                grades -> {
+                    List<Double> orderedGrades = grades.stream().sorted().toList(); // toList() -> unmodifiable list per Java 17+
+                    int size = orderedGrades.size();
+                    if(size % 2 == 0) {
+                        return (grades.get(grades.size() / 2 - 1) + grades.get(grades.size() / 2)) / 2;
                     }
-        ));
+                    else {
+                        return grades.get(grades.size() / 2);
+                    }
+                }
+        )
     }
 
     public static void main( String[] args ) {
