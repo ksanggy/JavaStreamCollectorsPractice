@@ -1,0 +1,5 @@
+This is a test file.
+It contains some words that will be counted.
+Some words will appear multiple times.
+This is a test file.
+Words will be counted and their frequencies will be shown. 
