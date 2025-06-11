@@ -1,4 +1,3 @@
-import java.sql.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -57,7 +56,7 @@ public class TotalAndAverageWordLength {
      * Contains:
      * - totalLength: sum of all word lengths
      * - averageLength: mean length of all words
-     * 
+     * <a/>
      * Example:
      * For text "This is a test" (words: "this", "is", "a", "test")
      * - totalLength = 10 (4 + 2 + 1 + 3)
@@ -92,7 +91,7 @@ public class TotalAndAverageWordLength {
      * 3. Converts all words to lowercase
      * 4. Removes empty strings
      * 5. Keeps only alphabetic words (a-z)
-     * 
+     * <a/>
      * Example:
      * Input: "  This is a TEST!  "
      * Output: ["this", "is", "a", "test"]
