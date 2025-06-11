@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
  */
 public class StringLengthBinCollector {
 
+    @SuppressWarnings("all")
     public static void main( String[] args ) {
         try {
             Map<Integer, Long> result = FileManager.readFile("test.txt", stringLengthBinCollector());
