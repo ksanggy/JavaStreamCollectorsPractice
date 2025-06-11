@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class Main {
+public class MedianCollector {
 
     // Student Class
     @SuppressWarnings("all")
