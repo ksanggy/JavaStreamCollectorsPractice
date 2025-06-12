@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("all")
@@ -57,6 +58,37 @@ public class MostRecentTransactionByMonth {
     }
 
     /**
+     * Alternative implementation of mostRecentTransactionByMonth using Collectors.toMap.
+     * This version is more efficient than the groupingBy approach because:
+     * 1. It processes elements in a single pass without creating intermediate collections
+     * 2. It directly maps elements to key-value pairs
+     * 3. It gives explicit control over collision handling through the merge function
+     * 
+     * @param transactions List of transactions to analyze
+     * @return Map where:
+     *         - Key: YearMonth
+     *         - Value: Most recent transaction in that month
+     */
+    public static Map<YearMonth, Transaction> mostRecentTransactionByMonth2(List<Transaction> transactions) {
+        return transactions.stream().collect(
+                Collectors.toMap(
+                        // Key mapper: extract YearMonth from transaction date
+                        transaction -> YearMonth.from(transaction.getDate()),
+                        // Value mapper: using Function.identity() is preferred over 't -> t' because:
+                        // 1. It's more idiomatic Java
+                        // 2. It's more efficient (reuses a singleton instance)
+                        // 3. It's more maintainable (automatically adapts to type changes)
+                        // 4. It clearly expresses the intent of using an identity function
+                        Function.identity(),
+                        // Merge function: when there's a collision (same month),
+                        // keep the transaction with the more recent date
+                        (existing, replacement) -> 
+                            existing.getDate().isAfter(replacement.getDate()) ? existing : replacement
+                )
+        );
+    }
+
+    /**
      * Finds the transaction with the highest amount for each month.
      * If multiple transactions have the same highest amount, the most recent one is chosen.
      *
@@ -96,7 +128,8 @@ public class MostRecentTransactionByMonth {
         );
 
         // A: Find most recent transaction for each month
-        System.out.println("Problem 3 A: " + mostRecentTransactionByMonth(transactions));
+        System.out.println("Problem 3 A (groupingBy version): " + mostRecentTransactionByMonth(transactions));
+        System.out.println("Problem 3 A (toMap version)     : " + mostRecentTransactionByMonth2(transactions));
 
         // B: Find transaction with the highest amount for each month
         System.out.println("Problem 3 B: " + highestAmountTransactionByMonth(transactions));
