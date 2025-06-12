@@ -1,3 +1,5 @@
+package beginner;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
