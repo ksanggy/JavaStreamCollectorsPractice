@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("all")
 public class MostRecentTransactionByMonth {
 
     // Problem 3: Group by Month and Most Recent Transaction
     @SuppressWarnings("all")
-
     public static class Transaction {
         LocalDate date;
         String id;
@@ -56,6 +56,33 @@ public class MostRecentTransactionByMonth {
         );
     }
 
+    /**
+     * Finds the transaction with the highest amount for each month.
+     * If multiple transactions have the same highest amount, the most recent one is chosen.
+     *
+     * @param transactions List of transactions to analyze
+     * @return Map where:
+     *         - Key: YearMonth
+     *         - Value: Transaction with the highest amount in that month (most recent if tied)
+     */
+    public static Map<YearMonth, Transaction> highestAmountTransactionByMonth(List<Transaction> transactions) {
+        return transactions.stream().collect(
+                // Group transactions by month
+                Collectors.groupingBy(
+                        d -> YearMonth.from(d.getDate()),
+                        // For each month, find the transaction with the highest amount
+                        // If amounts are equal, choose the most recent one
+                        Collectors.collectingAndThen(
+                                Collectors.maxBy(
+                                        Comparator.comparing(Transaction::getAmount)
+                                                .thenComparing(Transaction::getDate)
+                                ),
+                                Optional::get  // Unwrap the Optional to get the Transaction
+                        )
+                )
+        );
+    }
+
     public static void main(String[] args) {
         // Problem 3: Transaction Analysis
         // Test data with transactions across different months
@@ -70,5 +97,8 @@ public class MostRecentTransactionByMonth {
 
         // A: Find most recent transaction for each month
         System.out.println("Problem 3 A: " + mostRecentTransactionByMonth(transactions));
+
+        // B: Find transaction with the highest amount for each month
+        System.out.println("Problem 3 B: " + highestAmountTransactionByMonth(transactions));
     }
 }
