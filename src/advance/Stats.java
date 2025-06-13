@@ -1,6 +1,7 @@
 package advance;
 
 // Shared Stats class
+@SuppressWarnings("all")
 public class Stats {
     private long count;
     private double sum;
