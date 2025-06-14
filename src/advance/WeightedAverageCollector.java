@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.stream.Collector;
 
 public class WeightedAverageCollector {
+    // Constants for weights
+    private static final double HOMEWORK_WEIGHT = 0.2;
+    private static final double EXAM_WEIGHT = 0.3;
+
     /**
      * Represents a score with its associated weight.
      * Used for calculating weighted averages where different scores
@@ -100,7 +104,36 @@ public class WeightedAverageCollector {
         System.out.printf("Calculated Weighted Average: %.2f\n", weightedAverage);
 
         // Manual calculation for verification
-        double expected = (85*0.2 + 92*0.2 + 78*0.3 + 88*0.3) / (0.2 + 0.2 + 0.3 + 0.3);
+        // Note: Using double literals directly can lead to floating-point precision issues.
+        // For production code, consider the following improvements:
+        //
+        // 1. Use Constants for Better Maintainability:
+        //    private static final double HOMEWORK_WEIGHT = 0.2;
+        //    private static final double EXAM_WEIGHT = 0.3;
+        //    - Makes the code more maintainable
+        //    - Reduces the chance of typos
+        //    - Makes the meaning clearer
+        //
+        // 2. Use BigDecimal for Exact Arithmetic:
+        //    BigDecimal expected = new BigDecimal("85").multiply(new BigDecimal("0.2"))
+        //        .add(new BigDecimal("92").multiply(new BigDecimal("0.2")))
+        //        // ... and so on
+        //    - Provides exact decimal arithmetic
+        //    - Avoids floating-point rounding errors
+        //    - More suitable for financial calculations
+        //
+        // 3. Use Epsilon for Comparisons:
+        //    assert Math.abs(weightedAverage - expected) < 1e-9;
+        //    - Uses a small tolerance for comparison
+        //    - Handles floating-point imprecision
+        //    - More reliable than exact equality
+        //
+        // Expected = (85*HOMEWORK_WEIGHT + 92*HOMEWORK_WEIGHT + 78*EXAM_WEIGHT + 88*EXAM_WEIGHT)
+        //         / (2*HOMEWORK_WEIGHT + 2*EXAM_WEIGHT)
+        //         = (17 + 18.4 + 23.4 + 26.4) / 1.0
+        //         = 85.2
+        double expected = (85*HOMEWORK_WEIGHT + 92*HOMEWORK_WEIGHT + 78*EXAM_WEIGHT + 88*EXAM_WEIGHT)
+                / (2*HOMEWORK_WEIGHT + 2*EXAM_WEIGHT);
         System.out.printf("Expected Weighted Average: %.2f\n", expected);
 
         // Verify the result matches the expected value
