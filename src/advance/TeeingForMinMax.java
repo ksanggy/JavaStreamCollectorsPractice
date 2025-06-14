@@ -7,18 +7,40 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TeeingForMinMax {
+    /**
+     * Represents an event with an ID and timestamp.
+     * Using a record for immutable data structure.
+     */
     public record Event(String id, Instant timestamp) {}
 
+    /**
+     * Finds the time gap between the earliest and latest events in the list.
+     * Uses Collectors.teeing to efficiently find both min and max in a single pass.
+     *
+     * @param events List of events to analyze
+     * @return Duration between earliest and latest event
+     * @throws IllegalArgumentException if the events list is empty
+     */
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public static Duration findEventTimeGap(List<Event> events) {
-        // TODO: Implement using Collectors.teeing.
-        // The first downstream collector should find the min timestamp.
-        // The second downstream collector should find the max timestamp.
-        // The merger function will calculate the duration between them.
+        if (events.isEmpty()) {
+            throw new IllegalArgumentException("Cannot find time gap in empty event list");
+        }
+
         return events.stream().collect(
                 Collectors.teeing(
+                        // First collector: Find event with minimum timestamp
                         Collectors.minBy(Comparator.comparing(Event::timestamp)),
+                        // Second collector: Find event with maximum timestamp
                         Collectors.maxBy(Comparator.comparing(Event::timestamp)),
-                        (event, event2) -> Duration.between(event.get().timestamp(), event2.get().timestamp())
+                        // Merger function: Calculate duration between min and max timestamps
+                        // We can safely use get() here because:
+                        // 1. We checked for empty list above
+                        // 2. minBy and maxBy will always return a value for non-empty lists
+                        (minEvent, maxEvent) -> Duration.between(
+                                minEvent.get().timestamp(),
+                                maxEvent.get().timestamp()
+                        )
                 )
         );
     }
@@ -38,5 +60,13 @@ public class TeeingForMinMax {
         // Verification
         assert gap.equals(Duration.ofMinutes(75));
         System.out.println("\nTest Passed! ✅");
+
+        // Test empty list handling
+        try {
+            findEventTimeGap(List.of());
+            assert false : "Should have thrown IllegalArgumentException";
+        } catch (IllegalArgumentException e) {
+            System.out.println("Empty list test passed: " + e.getMessage());
+        }
     }
 }
