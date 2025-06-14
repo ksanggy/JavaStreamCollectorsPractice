@@ -10,14 +10,14 @@ public class MultiLevelGrouping {
     /**
      * Represents a sale transaction with product details and revenue.
      */
-    record Sale(String productId, String category, double revenue, LocalDate date) {}
+    public record Sale(String productId, String category, double revenue, LocalDate date) {}
     
     /**
      * Represents aggregated sales data for a category in a specific year.
      * @param totalRevenue Total revenue for the category in the year
      * @param uniqueProductCount Number of unique products sold
      */
-    record CategoryYearSales(double totalRevenue, long uniqueProductCount) {}
+    public record CategoryYearSales(double totalRevenue, long uniqueProductCount) {}
 
     /**
      * Summarizes sales data by category and year, calculating total revenue
@@ -40,9 +40,7 @@ public class MultiLevelGrouping {
                         Collectors.teeing(
                             Collectors.summarizingDouble(Sale::revenue),
                                 Collectors.toMap(Sale::productId, Function.identity()),
-                                (s, d) -> {
-                                    return new CategoryYearSales(s.getSum(), d.size());
-                                }
+                                (s, d) -> new CategoryYearSales(s.getSum(), d.size())
                         )
                 )
         ));
