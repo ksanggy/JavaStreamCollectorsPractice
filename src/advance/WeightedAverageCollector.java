@@ -129,11 +129,10 @@ public class WeightedAverageCollector {
         //    - More reliable than exact equality
         //
         // Expected = (85*HOMEWORK_WEIGHT + 92*HOMEWORK_WEIGHT + 78*EXAM_WEIGHT + 88*EXAM_WEIGHT)
-        //         / (2*HOMEWORK_WEIGHT + 2*EXAM_WEIGHT)
-        //         = (17 + 18.4 + 23.4 + 26.4) / 1.0
+        //         / 2.0  // Since we have two weights that sum to 1.0
+        //         = (17 + 18.4 + 23.4 + 26.4) / 2.0
         //         = 85.2
-        double expected = (85*HOMEWORK_WEIGHT + 92*HOMEWORK_WEIGHT + 78*EXAM_WEIGHT + 88*EXAM_WEIGHT)
-                / (2*HOMEWORK_WEIGHT + 2*EXAM_WEIGHT);
+        double expected = (85*HOMEWORK_WEIGHT + 92*HOMEWORK_WEIGHT + 78*EXAM_WEIGHT + 88*EXAM_WEIGHT) / 2.0;
         System.out.printf("Expected Weighted Average: %.2f\n", expected);
 
         // Verify the result matches the expected value
