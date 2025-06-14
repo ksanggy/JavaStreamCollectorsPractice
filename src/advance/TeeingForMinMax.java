@@ -6,6 +6,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 4. teeing Collector for Min/Max Gap
+ * Problem: Given a list of Event objects, each with a timestamp,
+ * use Collectors.teeing() to find both the earliest and latest event in a single stream operation.
+ * Then, calculate the Duration between them. Return the result as a Duration object.
+ */
 public class TeeingForMinMax {
     /**
      * Represents an event with an ID and timestamp.
