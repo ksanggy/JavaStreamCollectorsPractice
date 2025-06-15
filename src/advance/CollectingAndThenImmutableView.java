@@ -1,8 +1,8 @@
 package advance;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Collections;
 
 /**
  * 5. collectingAndThen for an Immutable, Sorted, Reversed List
@@ -18,7 +18,7 @@ public class CollectingAndThenImmutableView {
      * 2. Collects them into a list
      * 3. Sorts them in natural order
      * 4. Creates an unmodifiable, reversed view
-     *
+     * <p>
      * This is the more efficient implementation because:
      * - Creates only one modifiable list
      * - Sorts that list in-place (no new list created)
